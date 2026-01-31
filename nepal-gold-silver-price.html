@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nepal Gold & Silver Rate | Live Prices</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-primary: #D4AF37;
+      --gold-light: #F5E6A3;
+      --gold-dark: #996515;
+      --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 50%, #D4AF37 100%);
+      
+      --silver-primary: #C0C0C0;
+      --silver-light: #E8E8E8;
+      --silver-dark: #8A8A8A;
+      --silver-gradient: linear-gradient(135deg, #A8A8A8 0%, #E8E8E8 50%, #A8A8A8 100%);
+      
+      --bg-dark: #0D0D0D;
+      --bg-card: #1A1A1A;
+      --bg-elevated: #242424;
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A0A0;
+      --text-muted: #666666;
+      --border-subtle: rgba(212, 175, 55, 0.15);
+      --border-accent: rgba(212, 175, 55, 0.4);
+      --border-silver: rgba(192, 192, 192, 0.3);
+      --shadow-gold: 0 0 60px rgba(212, 175, 55, 0.15);
+      --shadow-silver: 0 0 60px rgba(192, 192, 192, 0.1);
+      --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.03;
+      background-image: 
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 35px,
+          var(--gold-primary) 35px,
+          var(--gold-primary) 36px
+        );
+    }
+
+    .glow-orb {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-orb-1 { 
+      top: -200px; 
+      right: -200px; 
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+    }
+    .glow-orb-2 { 
+      bottom: -300px; 
+      left: -200px; 
+      background: radial-gradient(circle, rgba(192, 192, 192, 0.06) 0%, transparent 70%);
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+      background: rgba(13, 13, 13, 0.8);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--gold-gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .logo-text .gold {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-text .silver {
+      background: var(--silver-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-primary);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--border-accent);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold-primary);
+      letter-spacing: 1px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #22C55E;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    /* Main Content */
+    main {
+      position: relative;
+      z-index: 5;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 60px 40px 100px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--gold-primary);
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 .gold-text {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 .silver-text {
+      background: var(--silver-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 550px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease-out 0.1s backwards;
+    }
+
+    .tab-btn {
+      padding: 14px 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--border-accent);
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active-gold {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.05) 100%);
+      border-color: var(--gold-primary);
+      color: var(--gold-primary);
+    }
+
+    .tab-btn.active-silver {
+      background: linear-gradient(135deg, rgba(192, 192, 192, 0.2) 0%, rgba(192, 192, 192, 0.05) 100%);
+      border-color: var(--silver-primary);
+      color: var(--silver-primary);
+    }
+
+    .tab-icon {
+      font-size: 18px;
+    }
+
+    /* Price Sections */
+    .price-section {
+      display: none;
+    }
+
+    .price-section.active {
+      display: block;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    /* Error Message */
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 12px;
+      padding: 16px 24px;
+      color: #EF4444;
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .error-message.active {
+      display: flex;
+    }
+
+    /* Price Cards Grid */
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 900px) {
+      .price-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      animation: fadeInUp 0.8s ease-out backwards;
+    }
+
+    .price-card:nth-child(1) { animation-delay: 0.1s; }
+    .price-card:nth-child(2) { animation-delay: 0.2s; }
+    .price-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .price-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gold-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .price-card.silver-card::before {
+      background: var(--silver-gradient);
+    }
+
+    .price-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-accent);
+      box-shadow: var(--shadow-gold), var(--shadow-card);
+    }
+
+    .price-card.silver-card:hover {
+      border-color: var(--border-silver);
+      box-shadow: var(--shadow-silver), var(--shadow-card);
+    }
+
+    .price-card:hover::before {
+      opacity: 1;
+    }
+
+    .price-card.featured {
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, var(--bg-card) 100%);
+      border-color: var(--border-accent);
+    }
+
+    .price-card.featured.silver-card {
+      background: linear-gradient(180deg, rgba(192, 192, 192, 0.08) 0%, var(--bg-card) 100%);
+      border-color: var(--border-silver);
+    }
+
+    .price-card.featured::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--bg-elevated);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .featured .card-icon {
+      background: var(--gold-gradient);
+    }
+
+    .featured.silver-card .card-icon {
+      background: var(--silver-gradient);
+    }
+
+    .card-badge {
+      padding: 6px 12px;
+      background: rgba(212, 175, 55, 0.15);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold-primary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .silver-card .card-badge {
+      background: rgba(192, 192, 192, 0.15);
+      color: var(--silver-primary);
+    }
+
+    .card-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .card-unit {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .card-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .card-price .currency {
+      font-size: 20px;
+      color: var(--gold-primary);
+      font-weight: 600;
+    }
+
+    .silver-card .card-price .currency {
+      color: var(--silver-primary);
+    }
+
+    .card-price .amount {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .silver-card .card-price .amount {
+      background: var(--silver-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-conversion {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Info Bar */
+    .info-bar {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 24px 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease-out 0.4s backwards;
+    }
+
+    @media (max-width: 768px) {
+      .info-bar {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-primary);
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Calculator Section */
+    .calculator-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 40px;
+      animation: fadeInUp 0.8s ease-out 0.5s backwards;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .section-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 20px;
+      align-items: end;
+    }
+
+    @media (max-width: 900px) {
+      .calculator-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input,
+    .form-select {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 16px;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23A0A0A0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 48px;
+    }
+
+    .form-select option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .btn-calculate {
+      background: var(--gold-gradient);
+      border: none;
+      border-radius: 12px;
+      padding: 16px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--bg-dark);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-calculate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+    }
+
+    .btn-calculate:active {
+      transform: translateY(0);
+    }
+
+    .result-box {
+      margin-top: 32px;
+      padding: 32px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.02) 100%);
+      border: 1px solid var(--border-accent);
+      border-radius: 16px;
+      text-align: center;
+      display: none;
+    }
+
+    .result-box.active {
+      display: block;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .result-box.silver-result {
+      background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(192, 192, 192, 0.02) 100%);
+      border-color: var(--border-silver);
+    }
+
+    .result-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .result-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 700;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .result-box.silver-result .result-value {
+      background: var(--silver-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .result-detail {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* Refresh Button */
+    .refresh-btn {
+      background: transparent;
+      border: 1px solid var(--border-accent);
+      border-radius: 10px;
+      padding: 10px 16px;
+      color: var(--gold-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .refresh-btn:hover {
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .refresh-btn svg {
+      transition: transform 0.3s ease;
+    }
+
+    .refresh-btn:hover svg {
+      transform: rotate(180deg);
+    }
+
+    .refresh-btn.loading svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      padding: 40px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(13, 13, 13, 0.8);
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-text a {
+      color: var(--gold-primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 16px 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      main {
+        padding: 40px 20px 60px;
+      }
+
+      .calculator-section {
+        padding: 24px;
+      }
+
+      .tab-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">⚜</div>
+      <div class="logo-text"><span class="gold">Gold</span> & <span class="silver">Silver</span></div>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#prices">Live Prices</a></li>
+        <li><a href="#calculator">Calculator</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      LIVE PRICES
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        Trusted by thousands of Nepalis
+      </div>
+      <h1>Live <span class="gold-text">Gold</span> & <span class="silver-text">Silver</span><br>Prices in Nepal</h1>
+      <p class="hero-subtitle">Real-time precious metal rates updated throughout the day. Track prices in Tola, Grams, or Kilograms.</p>
+    </section>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active-gold" id="goldTab" onclick="switchTab('gold')">
+        <span class="tab-icon">🥇</span>
+        Gold Prices
+      </button>
+      <button class="tab-btn" id="silverTab" onclick="switchTab('silver')">
+        <span class="tab-icon">🥈</span>
+        Silver Prices
+      </button>
+    </div>
+
+    <div class="error-message" id="errorMessage">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="errorText">Unable to fetch current prices. Showing estimated rates.</span>
+    </div>
+
+    <!-- Gold Section -->
+    <section id="goldSection" class="price-section active">
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="card-header">
+            <div class="card-icon">🥇</div>
+          </div>
+          <div class="card-label">Fine Gold (99.99%)</div>
+          <div class="card-unit">Per Tola</div>
+          <div class="card-price">
+            <span class="currency">NPR</span>
+            <span class="amount" id="goldPriceTolaFine">--</span>
+          </div>
+          <div class="card-conversion" id="goldConvTolaFine">≈ $-- USD</div>
+        </div>
+
+        <div class="price-card featured">
+          <div class="card-header">
+            <div class="card-icon">✦</div>
+            <span class="card-badge">Most Popular</span>
+          </div>
+          <div class="card-label">Tejabi Gold (99.50%)</div>
+          <div class="card-unit">Per Tola</div>
+          <div class="card-price">
+            <span class="currency">NPR</span>
+            <span class="amount" id="goldPriceTolaTejabi">--</span>
+          </div>
+          <div class="card-conversion" id="goldConvTolaTejabi">≈ $-- USD</div>
+        </div>
+
+        <div class="price-card">
+          <div class="card-header">
+            <div class="card-icon">💎</div>
+          </div>
+          <div class="card-label">Fine Gold (99.99%)</div>
+          <div class="card-unit">Per 10 Grams</div>
+          <div class="card-price">
+            <span class="currency">NPR</span>
+            <span class="amount" id="goldPriceGram">--</span>
+          </div>
+          <div class="card-conversion" id="goldConvGram">≈ $-- USD</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Silver Section -->
+    <section id="silverSection" class="price-section">
+      <div class="price-grid">
+        <div class="price-card silver-card">
+          <div class="card-header">
+            <div class="card-icon">🥈</div>
+          </div>
+          <div class="card-label">Pure Silver (99.9%)</div>
+          <div class="card-unit">Per Tola</div>
+          <div class="card-price">
+            <span class="currency">NPR</span>
+            <span class="amount" id="silverPriceTola">--</span>
+          </div>
+          <div class="card-conversion" id="silverConvTola">≈ $-- USD</div>
+        </div>
+
+        <div class="price-card silver-card featured">
+          <div class="card-header">
+            <div class="card-icon">✦</div>
+            <span class="card-badge">Most Popular</span>
+          </div>
+          <div class="card-label">Pure Silver (99.9%)</div>
+          <div class="card-unit">Per 10 Grams</div>
+          <div class="card-price">
+            <span class="currency">NPR</span>
+            <span class="amount" id="silverPriceGram">--</span>
+          </div>
+          <div class="card-conversion" id="silverConvGram">≈ $-- USD</div>
+        </div>
+
+        <div class="price-card silver-card">
+          <div class="card-header">
+            <div class="card-icon">⚖️</div>
+          </div>
+          <div class="card-label">Pure Silver (99.9%)</div>
+          <div class="card-unit">Per Kilogram</div>
+          <div class="card-price">
+            <span class="currency">NPR</span>
+            <span class="amount" id="silverPriceKg">--</span>
+          </div>
+          <div class="card-conversion" id="silverConvKg">≈ $-- USD</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="info-bar">
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Last Updated</div>
+          <div class="info-value" id="lastUpdate">--</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+          <div class="info-label">Exchange Rate</div>
+          <div class="info-value" id="exchangeRate">1 USD = -- NPR</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/></svg>
+        </div>
+        <div>
+          <button class="refresh-btn" id="refreshBtn" onclick="fetchPrices()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/></svg>
+            Refresh Prices
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section id="calculator" class="calculator-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Precious Metals Calculator</h2>
+          <p class="section-subtitle">Calculate gold or silver value based on weight and purity</p>
+        </div>
+      </div>
+      
+      <div class="calculator-grid">
+        <div class="form-group">
+          <label class="form-label">Metal</label>
+          <select class="form-select" id="metalSelect" onchange="updateUnitOptions()">
+            <option value="gold">Gold</option>
+            <option value="silver">Silver</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weight</label>
+          <input type="number" class="form-input" id="weightInput" placeholder="Enter weight" value="1" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Unit & Purity</label>
+          <select class="form-select" id="unitSelect">
+            <option value="tola-fine">Tola - Fine (99.99%)</option>
+            <option value="tola-tejabi">Tola - Tejabi (99.50%)</option>
+            <option value="gram-fine">Gram - Fine (99.99%)</option>
+            <option value="gram-tejabi">Gram - Tejabi (99.50%)</option>
+            <option value="kg-fine">Kilogram - Fine (99.99%)</option>
+            <option value="kg-tejabi">Kilogram - Tejabi (99.50%)</option>
+          </select>
+        </div>
+        <button class="btn-calculate" onclick="calculate()">Calculate</button>
+      </div>
+
+      <div class="result-box" id="resultBox">
+        <div class="result-label">Estimated Value</div>
+        <div class="result-value" id="resultValue">NPR 0</div>
+        <div class="result-detail" id="resultDetail">0 Tola × NPR 0/Tola</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="footer-text">
+      Prices are indicative and sourced from international markets. Actual jeweler prices may vary.<br>
+      © 2025 Nepal Gold & Silver Rate. Data powered by <a href="https://www.goldapi.io" target="_blank">GoldAPI</a>
+    </p>
+  </footer>
+
+  <script>
+    const API_KEY = 'goldapi-3bd911fsml23n03m-io';
+    
+    // Current rates
+    let priceData = {
+      goldPerOunceUSD: 0,
+      silverPerOunceUSD: 0,
+      exchangeRateNPR: 136.5, // Updated default rate
+      lastUpdated: null
+    };
+
+    // Calculated prices in NPR
+    let calculatedPrices = {
+      gold: {
+        finePerTola: 0,
+        tejabiPerTola: 0,
+        finePer10Gram: 0
+      },
+      silver: {
+        perTola: 0,
+        per10Gram: 0,
+        perKg: 0
+      }
+    };
+
+    // Constants
+    const GRAMS_PER_TOLA = 11.6638;
+    const GRAMS_PER_TROY_OUNCE = 31.1035;
+    const TEJABI_PURITY = 0.995; // 99.50%
+
+    let currentTab = 'gold';
+
+    // Format number with commas
+    function formatNumber(num) {
+      return new Intl.NumberFormat('en-NP', {
+        maximumFractionDigits: 0
+      }).format(num);
+    }
+
+    // Format USD
+    function formatUSD(num) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(num);
+    }
+
+    // Switch tabs
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      document.getElementById('goldTab').classList.remove('active-gold');
+      document.getElementById('silverTab').classList.remove('active-silver');
+      document.getElementById('goldSection').classList.remove('active');
+      document.getElementById('silverSection').classList.remove('active');
+
+      if (tab === 'gold') {
+        document.getElementById('goldTab').classList.add('active-gold');
+        document.getElementById('goldSection').classList.add('active');
+        document.getElementById('metalSelect').value = 'gold';
+      } else {
+        document.getElementById('silverTab').classList.add('active-silver');
+        document.getElementById('silverSection').classList.add('active');
+        document.getElementById('metalSelect').value = 'silver';
+      }
+      
+      updateUnitOptions();
+    }
+
+    // Update unit options based on metal selection
+    function updateUnitOptions() {
+      const metal = document.getElementById('metalSelect').value;
+      const unitSelect = document.getElementById('unitSelect');
+      
+      if (metal === 'gold') {
+        unitSelect.innerHTML = `
+          <option value="tola-fine">Tola - Fine (99.99%)</option>
+          <option value="tola-tejabi">Tola - Tejabi (99.50%)</option>
+          <option value="gram-fine">Gram - Fine (99.99%)</option>
+          <option value="gram-tejabi">Gram - Tejabi (99.50%)</option>
+          <option value="kg-fine">Kilogram - Fine (99.99%)</option>
+          <option value="kg-tejabi">Kilogram - Tejabi (99.50%)</option>
+        `;
+      } else {
+        unitSelect.innerHTML = `
+          <option value="tola-pure">Tola - Pure (99.9%)</option>
+          <option value="gram-pure">Gram - Pure (99.9%)</option>
+          <option value="kg-pure">Kilogram - Pure (99.9%)</option>
+        `;
+      }
+    }
+
+    // Update UI with prices
+    function updateUI() {
+      // Calculate gold prices
+      const goldPricePerGramUSD = priceData.goldPerOunceUSD / GRAMS_PER_TROY_OUNCE;
+      const goldPricePerGramNPR = goldPricePerGramUSD * priceData.exchangeRateNPR;
+      
+      calculatedPrices.gold.finePerTola = goldPricePerGramNPR * GRAMS_PER_TOLA;
+      calculatedPrices.gold.tejabiPerTola = calculatedPrices.gold.finePerTola * TEJABI_PURITY;
+      calculatedPrices.gold.finePer10Gram = goldPricePerGramNPR * 10;
+
+      // Calculate silver prices
+      const silverPricePerGramUSD = priceData.silverPerOunceUSD / GRAMS_PER_TROY_OUNCE;
+      const silverPricePerGramNPR = silverPricePerGramUSD * priceData.exchangeRateNPR;
+      
+      calculatedPrices.silver.perTola = silverPricePerGramNPR * GRAMS_PER_TOLA;
+      calculatedPrices.silver.per10Gram = silverPricePerGramNPR * 10;
+      calculatedPrices.silver.perKg = silverPricePerGramNPR * 1000;
+
+      // Update gold price displays
+      document.getElementById('goldPriceTolaFine').textContent = formatNumber(calculatedPrices.gold.finePerTola);
+      document.getElementById('goldPriceTolaTejabi').textContent = formatNumber(calculatedPrices.gold.tejabiPerTola);
+      document.getElementById('goldPriceGram').textContent = formatNumber(calculatedPrices.gold.finePer10Gram);
+
+      // Update gold USD conversions
+      document.getElementById('goldConvTolaFine').textContent = `≈ ${formatUSD(calculatedPrices.gold.finePerTola / priceData.exchangeRateNPR)} USD`;
+      document.getElementById('goldConvTolaTejabi').textContent = `≈ ${formatUSD(calculatedPrices.gold.tejabiPerTola / priceData.exchangeRateNPR)} USD`;
+      document.getElementById('goldConvGram').textContent = `≈ ${formatUSD(calculatedPrices.gold.finePer10Gram / priceData.exchangeRateNPR)} USD`;
+
+      // Update silver price displays
+      document.getElementById('silverPriceTola').textContent = formatNumber(calculatedPrices.silver.perTola);
+      document.getElementById('silverPriceGram').textContent = formatNumber(calculatedPrices.silver.per10Gram);
+      document.getElementById('silverPriceKg').textContent = formatNumber(calculatedPrices.silver.perKg);
+
+      // Update silver USD conversions
+      document.getElementById('silverConvTola').textContent = `≈ ${formatUSD(calculatedPrices.silver.perTola / priceData.exchangeRateNPR)} USD`;
+      document.getElementById('silverConvGram').textContent = `≈ ${formatUSD(calculatedPrices.silver.per10Gram / priceData.exchangeRateNPR)} USD`;
+      document.getElementById('silverConvKg').textContent = `≈ ${formatUSD(calculatedPrices.silver.perKg / priceData.exchangeRateNPR)} USD`;
+
+      // Update exchange rate
+      document.getElementById('exchangeRate').textContent = `1 USD = ${priceData.exchangeRateNPR.toFixed(2)} NPR`;
+
+      // Update timestamp
+      if (priceData.lastUpdated) {
+        const time = priceData.lastUpdated.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        const date = priceData.lastUpdated.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        document.getElementById('lastUpdate').textContent = `${time}, ${date}`;
+      }
+    }
+
+    // Fetch prices from API
+    async function fetchPrices() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      refreshBtn.classList.add('loading');
+      errorMessage.classList.remove('active');
+
+      try {
+        // Fetch gold price
+        const goldResponse = await fetch('https://www.goldapi.io/api/XAU/USD', {
+          method: 'GET',
+          headers: {
+            'x-access-token': API_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!goldResponse.ok) throw new Error('Gold API request failed');
+        const goldData = await goldResponse.json();
+        
+        // Fetch silver price
+        const silverResponse = await fetch('https://www.goldapi.io/api/XAG/USD', {
+          method: 'GET',
+          headers: {
+            'x-access-token': API_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!silverResponse.ok) throw new Error('Silver API request failed');
+        const silverData = await silverResponse.json();
+
+        if (goldData.price && silverData.price) {
+          priceData.goldPerOunceUSD = goldData.price;
+          priceData.silverPerOunceUSD = silverData.price;
+          priceData.lastUpdated = new Date();
+          
+          // Try to get exchange rate
+          try {
+            const fxResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+            const fxData = await fxResponse.json();
+            if (fxData.rates && fxData.rates.NPR) {
+              priceData.exchangeRateNPR = fxData.rates.NPR;
+            }
+          } catch (e) {
+            console.log('Using default exchange rate');
+          }
+
+          updateUI();
+        }
+      } catch (error) {
+        console.error('Error fetching prices:', error);
+        errorMessage.classList.add('active');
+        
+        // Use fallback data for demo
+        if (priceData.goldPerOunceUSD === 0) {
+          priceData.goldPerOunceUSD = 2650; // Fallback gold price
+          priceData.silverPerOunceUSD = 31.5; // Fallback silver price
+          priceData.lastUpdated = new Date();
+          updateUI();
+        }
+      } finally {
+        refreshBtn.classList.remove('loading');
+      }
+    }
+
+    // Calculator function
+    function calculate() {
+      const weight = parseFloat(document.getElementById('weightInput').value) || 0;
+      const metal = document.getElementById('metalSelect').value;
+      const unitSelect = document.getElementById('unitSelect').value;
+      const parts = unitSelect.split('-');
+      const unit = parts[0];
+      const purity = parts[1];
+      
+      let pricePerUnit = 0;
+      let unitLabel = '';
+      let purityLabel = '';
+
+      if (metal === 'gold') {
+        const isFine = purity === 'fine';
+        purityLabel = isFine ? '99.99%' : '99.50%';
+        const baseTolaPrice = isFine ? calculatedPrices.gold.finePerTola : calculatedPrices.gold.tejabiPerTola;
+        const baseGramPrice = (isFine ? calculatedPrices.gold.finePer10Gram : calculatedPrices.gold.finePer10Gram * TEJABI_PURITY) / 10;
+
+        switch(unit) {
+          case 'tola':
+            pricePerUnit = baseTolaPrice;
+            unitLabel = 'Tola';
+            break;
+          case 'gram':
+            pricePerUnit = baseGramPrice;
+            unitLabel = 'Gram';
+            break;
+          case 'kg':
+            pricePerUnit = baseGramPrice * 1000;
+            unitLabel = 'Kg';
+            break;
+        }
+      } else {
+        purityLabel = '99.9%';
+        const silverPerGram = calculatedPrices.silver.per10Gram / 10;
+
+        switch(unit) {
+          case 'tola':
+            pricePerUnit = calculatedPrices.silver.perTola;
+            unitLabel = 'Tola';
+            break;
+          case 'gram':
+            pricePerUnit = silverPerGram;
+            unitLabel = 'Gram';
+            break;
+          case 'kg':
+            pricePerUnit = calculatedPrices.silver.perKg;
+            unitLabel = 'Kg';
+            break;
+        }
+      }
+
+      const totalValue = weight * pricePerUnit;
+
+      // Show result
+      const resultBox = document.getElementById('resultBox');
+      resultBox.classList.add('active');
+      resultBox.classList.toggle('silver-result', metal === 'silver');
+      
+      document.getElementById('resultValue').textContent = `NPR ${formatNumber(totalValue)}`;
+      document.getElementById('resultDetail').textContent = 
+        `${weight} ${unitLabel} ${metal.charAt(0).toUpperCase() + metal.slice(1)} × NPR ${formatNumber(pricePerUnit)}/${unitLabel} (${purityLabel} purity)`;
+    }
+
+    // Auto-calculate on input change
+    document.getElementById('weightInput').addEventListener('input', calculate);
+    document.getElementById('unitSelect').addEventListener('change', calculate);
+    document.getElementById('metalSelect').addEventListener('change', () => {
+      updateUnitOptions();
+      calculate();
+    });
+
+    // Initial fetch
+    fetchPrices();
+
+    // Auto-refresh every 5 minutes
+    setInterval(fetchPrices, 5 * 60 * 1000);
+  </script>
+</body>
+</html>
